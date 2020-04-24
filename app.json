@@ -1,0 +1,17 @@
+{
+  "name": "Bukukas",
+  "displayName": "Bukukas",
+  "expo": {
+    "name": "Bukukas",
+    "slug": "Bukukas",
+    "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
