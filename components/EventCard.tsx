@@ -1,22 +1,29 @@
-import * as React from 'react';
-import { Text, View,FlatList, StyleSheet,Dimensions,TouchableOpacity,ImageBackground } from 'react-native';
-
+import React,{useState} from 'react';
+import { Text, View,FlatList,Dimensions,TouchableOpacity,ImageBackground } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { gridStyles,listStyles } from '../StyleSheets/EventCard';
 import eventsData from '../Data/data';
-interface EventCardProps {navigation,events,ScreenType}
+interface EventCardProps {navigation,events,ScreenType,eventsData}
 
-
+const {width} = Dimensions.get('window')
 
 const EventCard = (props: EventCardProps) => {
-    const {events,ScreenType } = props;
+    const {events,ScreenType,eventsData } = props;
     console.log('events: ', events);
-    // console.log('props: ', props,eventData);
+    const [layout, setView] = useState(false);
     const SeeEventDetails = (item) => {
         const { navigation } = props;
         navigation.navigate('EventDetails',{eventDetails:item,ScreenType})
     }
-
+    const styles = layout ? listStyles : gridStyles;
     return (
+        <View style={gridStyles.mainWrapper}>
+            <View style={gridStyles.cardTopWrapper}>
+  <Text style={gridStyles.EventCategoryTitle}>Discover Events near you</Text>
+<Icon name="list"  size={30} onPress={() => setView(!layout)} style={{marginTop:'3%'}}/>
+</View>
         <FlatList
+        extraData
                 style={styles.container}
                 showsVerticalScrollIndicator={false}
         data={eventsData}
@@ -28,6 +35,7 @@ const EventCard = (props: EventCardProps) => {
             <View style={styles.entryType}><Text style={styles.entryTypetxt}>{item.entryType}</Text></View>
     
             </ImageBackground>
+            <View style={styles.layout}>
             <View style={styles.eventNameWrapper}>
                 <Text style={styles.eventName}>{item.eventName}</Text>
               
@@ -48,48 +56,15 @@ const EventCard = (props: EventCardProps) => {
                   </View>
               </View>
             </View>
-    
+    </View>
             </TouchableOpacity>
               }
            </React.Fragment>
     }
-        keyExtractor={item => item.id}
+        keyExtractor={item => JSON.stringify(item.id)}
       />
-           
+       </View>    
     )
 }
 
 export default EventCard;
-
-const styles = StyleSheet.create({
-  container: {flex: 1,padding:'5%',marginBottom:'5%'},
-  eventCardWrapper:{width:'100%',backgroundColor:'#fff',shadowColor: "#000",
-  shadowOffset: {
-      width: 0,
-      height: 2,
-  },
-  shadowOpacity: 0.25,
-  shadowRadius: 3.84,
-  
-  elevation: 5,borderRadius:8,marginBottom:'5%'},
-  eventImage:{width:'100%',height:150},
-  imageStyle:{borderTopLeftRadius:8,borderTopRightRadius:8},
-  eventNameWrapper:{width:'100%',padding:'3%',paddingBottom:0},
-  eventName:{fontWeight:'bold',fontSize:17},
-  eventDetailsWrapper:{width:'100%',paddingHorizontal:'5%',paddingVertical:'3%'},
-  eventLocationInnerWrapper:{display:'flex',width:'50%'},
-  eventLocationWrapper:{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-between',borderBottomWidth:0.5,paddingBottom:'5%',borderColor:'#DEDEE7'},
-  eventLocation:{color:'#333333',fontSize:15,width:'100%'},
-  venue:{fontSize:15,width:'100%',color:'#000',fontWeight:'bold'},
-  eventTimings:{color:'#333333',fontSize:15,display:'flex',alignItems:'center',justifyContent:'center',padding:'2%'},
-  eventActionWrapper:{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-between',paddingTop:'2%'},
-  eventActionLeftWrapper:{width:'100%',display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-between',paddingTop:'2%'},
-  eventActionRightWrapper:{width:'40%',display:'flex',alignItems:'center',justifyContent:'center'},
-  rsvpbtn:{backgroundColor:'#323edd',paddingVertical:'5%',paddingHorizontal:'10%',borderRadius:15,fontSize:15},
-  going:{backgroundColor:'green',borderRadius:15,width:30,height:30,marginRight:'5%',textAlign:'center',paddingVertical:5,color:'#fff'},
-  maybeGoing:{backgroundColor:'red',borderRadius:15,width:30,height:30,marginLeft:'5%',marginRight:'5%',textAlign:'center',paddingVertical:5,color:'#fff'},
-  checkDetails:{color:"#fff"},
-  entryTypetxt:{color:'#fff'},
-  entryType:{position:'absolute',right:0,top:10,backgroundColor:'#323edd',paddingVertical:'2%',paddingHorizontal:'5%',display:'flex',alignItems:'center',justifyContent:'center',borderTopLeftRadius:20,borderBottomLeftRadius:20},
-  eventaction:{display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-evenly'}
-});

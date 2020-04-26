@@ -10,6 +10,7 @@ interface EventDetailsProps {route}
 const { width,height} = Dimensions.get('window')
 const EventDetails = (props: EventDetailsProps) => {
   const [events, setEvents] = useState([]);
+  const [favourite, setfavourite] = useState(false);
     console.log('props: event details', props,events);
     const {route } = props;
     const {params } = route;
@@ -69,7 +70,7 @@ const joinEvent = (id) => {
           <View style={styles.eventDetailsBottomWrapper}>
               <View style={styles.eventDetailsInfo}>
                 <View style={styles.eventnameWrapper}>
-              <Text style={styles.eventName}>{params && params.eventDetails.eventName}</Text><Icon name="heart" size={30} color="#888888" backgroundColor="#fff"/>
+              <Text style={styles.eventName}>{params && params.eventDetails.eventName}</Text><Icon name="heart" size={30} color={favourite ? 'red' : "#888888"} backgroundColor="#fff" onPress={() => setfavourite(!favourite)}/>
               </View>
                   <View style={styles.dateTimeWrapper}>
                   <Icon name="calendar" size={20} color="#888888"/>

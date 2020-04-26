@@ -1,16 +1,16 @@
 import React,{useEffect, useState} from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import EventCard from './EventCard';
 import Database from '../database';
+import eventsData from '../Data/data';
 
 const db = new Database();
 interface MyEventsProps {navigation}
 
 const MyEvents = (props: MyEventsProps) => {
     const [events, setEvents] = useState([]);
+    const {navigation } = props;
     useEffect(() => {
-        console.log('my events api call');
-        // Update the document title using the browser API
         getSubscribedEvents();
       },[]);
 
@@ -23,11 +23,10 @@ const MyEvents = (props: MyEventsProps) => {
             })
       }
     
-    const {navigation } = props;
-    console.log('events....',events);
+    
   return (
     <View style={styles.container}>
-        <EventCard navigation={navigation} events={events} ScreenType={undefined}/>
+        <EventCard navigation={navigation} events={events} ScreenType={undefined} eventsData={eventsData}/>
     </View>
   );
 };
