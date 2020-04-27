@@ -1,21 +1,19 @@
 import * as React from 'react';
 import { View, StyleSheet } from 'react-native';
-
-import Swipeable from 'react-native-gesture-handler/Swipeable'
 import EventCard from './EventCard';
+
 interface EventWrapperProps {
-    navigation,eventsData
+    navigation,filterType
 }
 
 const EventWrapper = (props: EventWrapperProps) => {
-    const { navigation,eventsData } = props;
+    const { navigation,filterType } = props;
   return (
     <View style={styles.container}>
       
 
-      <Swipeable onSwipeableLeftOpen={() => console.log('swipe left')} childrenContainerStyle={{width: '100%', height: '100%',marginBottom:'5%'}}>
-      <EventCard navigation={navigation} ScreenType events={undefined} eventsData={eventsData}/>
-      </Swipeable>
+      <EventCard navigation={navigation} ScreenType events={undefined} filterType={filterType} title='Discover Events near you'/>
+
     </View>
   );
 };
@@ -23,6 +21,6 @@ const EventWrapper = (props: EventWrapperProps) => {
 export default EventWrapper;
 
 const styles = StyleSheet.create({
-  container: {flex: 1,backgroundColor:'#F4F4F4',borderTopLeftRadius:18,borderTopRightRadius:18,paddingBottom:'15%'},
+  container: {flex: 1,backgroundColor:'#F4F4F4',borderTopLeftRadius:18,borderTopRightRadius:18,},
   
 });

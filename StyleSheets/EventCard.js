@@ -35,7 +35,8 @@ export const gridStyles = StyleSheet.create({
     checkDetails:{color:"#fff"},
     entryTypetxt:{color:'#fff'},
     entryType:{position:'absolute',right:0,top:10,backgroundColor:'#323edd',paddingVertical:'2%',paddingHorizontal:'5%',display:'flex',alignItems:'center',justifyContent:'center',borderTopLeftRadius:20,borderBottomLeftRadius:20},
-    eventaction:{display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-evenly'}
+    eventaction:{display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-evenly'},
+   
   });
   
   export const listStyles = StyleSheet.create({

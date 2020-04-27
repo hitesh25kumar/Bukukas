@@ -32,7 +32,7 @@ export default class Database {
                   console.log("Received error: ", error);
                   console.log("Database not yet ready ... populating data");
                   db.transaction((tx) => {
-                      tx.executeSql('CREATE TABLE IF NOT EXISTS SUBSCRIBE_EVENTS (id)');
+                      tx.executeSql('CREATE TABLE IF NOT EXISTS SUBSCRIBE_EVENTS (id,name)');
                   }).then(() => {
                       console.log("Table created successfully");
                   }).catch(error => {
@@ -67,12 +67,13 @@ export default class Database {
     }
   };
 
-  listJoinedEvents() {
+  listJoinedEvents(data) {
+    const name = data.toUpperCase();
     return new Promise((resolve) => {
       const events = [];
       this.initDB().then((db) => {
         db.transaction((tx) => {
-          tx.executeSql('SELECT * FROM SUBSCRIBE_EVENTS p ORDER BY id ', []).then(([tx,results]) => {
+          tx.executeSql('SELECT id FROM SUBSCRIBE_EVENTS WHERE name = ?', [name]).then(([tx,results]) => {
             console.log("Query completed");
             var len = results.rows.length;
             for (let i = 0; i < len; i++) {
@@ -102,7 +103,7 @@ export default class Database {
     return new Promise((resolve) => {
       this.initDB().then((db) => {
         db.transaction((tx) => {
-          tx.executeSql('INSERT INTO SUBSCRIBE_EVENTS VALUES (?)', [data.id]).then(([tx, results]) => {
+          tx.executeSql('INSERT INTO SUBSCRIBE_EVENTS VALUES (?,?)', [data.id,data.name.toUpperCase()]).then(([tx, results]) => {
             resolve(results);
             console.log('results: ', results);
           });
@@ -115,6 +116,25 @@ export default class Database {
         });
       }).catch((err) => {
         console.log('err:2 ', err);
+        console.log(err);
+      });
+    });  
+  }
+
+  deleteEvent(data) {
+    return new Promise((resolve) => {
+      this.initDB().then((db) => {
+        db.transaction((tx) => {
+          tx.executeSql('DELETE FROM SUBSCRIBE_EVENTS WHERE id = ? AND name  = ?', [data.id,data.name.toUpperCase()]).then(([tx, results]) => {
+            console.log(results);
+            resolve(results);
+          });
+        }).then((result) => {
+          this.closeDatabase(db);
+        }).catch((err) => {
+          console.log(err);
+        });
+      }).catch((err) => {
         console.log(err);
       });
     });  

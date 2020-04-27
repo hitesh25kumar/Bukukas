@@ -1,66 +1,86 @@
 import React,{useEffect,useState} from 'react';
 import { Text, View, StyleSheet, ImageBackground,Dimensions,TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import JoiningConfirmPopup from './JoiningConfirmation';
 import Database from '../database';
 
 const db = new Database();
-interface EventDetailsProps {route}
+interface EventDetailsProps {route,navigation}
 
-const { width,height} = Dimensions.get('window')
+const { height} = Dimensions.get('window')
 const EventDetails = (props: EventDetailsProps) => {
   const [events, setEvents] = useState([]);
   const [favourite, setfavourite] = useState(false);
+  const [username, setUsername] = useState('');
+  const [showConfirmation, setConfirmation] = useState(false);
     console.log('props: event details', props,events);
-    const {route } = props;
+    const {route,navigation } = props;
     const {params } = route;
-    const {ScreenType } = params;
-    // const eventDetails ={}
+
     useEffect(() => {
       console.log('event details api call');
       // Update the document title using the browser API
       getSubscribedEvents();
     },[]);
     
-    const getSubscribedEvents = () => {
-      db.listJoinedEvents().then((data) => {
-          console.log('event details data: details', data);
-          setEvents(data)
-      //   products = data;
-      //   this.setState({
-      //     products,
-      //     isLoading: false,
-      //   });
+      const getSubscribedEvents = async() => {
+        try {
+          const value = await AsyncStorage.getItem('username')
+          if(value !== null) {
+            setUsername(value)
+            db.listJoinedEvents(value).then((data) => {
+              console.log('event details data: ', data);
+              setEvents(data)
+          }).catch((err) => {
+            console.log(err);
+          })
+            
+          }
+        } catch(e) {
+          // error reading value
+        }
+      }
+
+const joinEvent = async(id) => {
+  try {
+      let data = {
+        id: id,
+        name:username
+      }
+      if(events && events.includes(params && params.eventDetails.id)){
+        
+        db.deleteEvent(data).then((result) => {
+          console.log(result);
+          getSubscribedEvents()
+        }).catch((err) => {
+          console.log(err);
+        })
+      }
+      else{
+      db.addEvent(data).then((result) => {
+        console.log(result);
+        setConfirmation(true)
       }).catch((err) => {
         console.log(err);
-      //   this.setState = {
-      //     isLoading: false
-      //   }
       })
-}
-const joinEvent = (id) => {
-    let data = {
-      id: id,
     }
-    db.addEvent(data).then((result) => {
-      console.log(result);
-      // this.setState({
-      //   isLoading: false,
-      // });
-      // this.props.navigation.goBack();
-    }).catch((err) => {
-      console.log(err);
-      // this.setState({
-      //   isLoading: false,
-      // });
-    })
   }
+    catch(e) {
+      // error reading value
+    }
+      
+    }
 
 
 
   return (
+    <React.Fragment>
+      {showConfirmation &&
+       <JoiningConfirmPopup navigation={navigation} eventName={params && params.eventDetails.eventName} hidePopup={() => setConfirmation(false)} />
+      }
     <View style={styles.container}>
-      {/* <JoiningConfirmPopup/> */}
+     
       <ImageBackground resizeMode="cover" style={styles.eventDetailsImage} source={{uri:params && params.eventDetails.image}}>
           <View style={styles.entryType}><Text style={styles.entryTypetxt}>{params && params.eventDetails.entryType}</Text></View>
 
@@ -98,12 +118,13 @@ const joinEvent = (id) => {
   <Text style={styles.aboutEventtxt}>The total trip is for 5 days, Day 0 and Day 4 are travelling days where we will enjoy the scenic beauty of Himalayan ranges and beautiful rivers. Our stay wills</Text>
   </View>
               </View>
-<TouchableOpacity disabled={events && events.includes(params && params.eventDetails.id)} style={[styles.rsvp,{backgroundColor: events && events.includes(params && params.eventDetails.id) ? '#888888' : '#323edd'}]} onPress={() => joinEvent(params && params.eventDetails.id)}>
-    <Text style={styles.rsvpTxt}>{events && events.includes(params && params.eventDetails.id) ? 'JOINED' :'JOIN EVENT' }</Text>
+<TouchableOpacity style={[styles.rsvp,{backgroundColor: events && events.includes(params && params.eventDetails.id) ? 'red' : '#323edd'}]} onPress={() => joinEvent(params && params.eventDetails.id)}>
+    <Text style={styles.rsvpTxt}>{events && events.includes(params && params.eventDetails.id) ? 'UNFOLLOW EVENT' :'FOLLOW EVENT' }</Text>
 </TouchableOpacity>
           </View>
       </View>
     </View>
+    </React.Fragment>
   );
 };
 

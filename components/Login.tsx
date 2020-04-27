@@ -2,13 +2,14 @@ import React,{useState} from 'react';
 import { Text, View, StyleSheet,Dimensions,TouchableOpacity,TextInput,KeyboardAvoidingView,Platform } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
-interface LoginProps {hideLogin}
+interface LoginProps {hideLogin,setname}
 const {width, height} = Dimensions.get('window')
 
 const Login = (props: LoginProps) => {
     const [name, setName] = useState('');
-const {hideLogin} = props;
+const {hideLogin,setname} = props;
 const storeLoginData = async () => {
+  setname(name)
   console.log('login');
   try {
     await AsyncStorage.setItem('username', name)
